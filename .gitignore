@@ -1,0 +1,37 @@
+# Dependencies / build
+node_modules/
+dist/
+build/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Env (keep .env.example)
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# SQLite
+*.db
+*.sqlite
+*.sqlite3
+
+# Program output (keep folder)
+project/output/*
+!project/output/.gitkeep
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
+*.log
+
+# Claude skill eval artifacts (unrelated to project)
+.claude/skills/ons-ui-designer-workspace/
