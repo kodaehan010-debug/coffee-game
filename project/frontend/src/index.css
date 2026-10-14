@@ -1,0 +1,104 @@
+:root {
+  --bg: #fffaf3;
+  --fg: #2b2118;
+  --muted: #8a7a6a;
+  --accent: #6f4e37;
+  --accent-fg: #fff;
+  --card: #fff;
+  --line: #e6dccf;
+  --win: #e4572e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, 'Malgun Gothic', sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  font-size: 18px;
+}
+
+main { max-width: 960px; margin: 0 auto; padding: 16px; text-align: center; }
+
+.nav {
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;
+  padding: 12px 16px; background: var(--accent); color: var(--accent-fg);
+}
+.nav .logo { font-weight: 700; font-size: 20px; }
+.nav nav { display: flex; gap: 4px; }
+.nav a { color: var(--accent-fg); text-decoration: none; padding: 6px 12px; border-radius: 8px; }
+.nav a.active { background: rgba(255, 255, 255, .2); }
+
+.muted { color: var(--muted); font-size: 15px; }
+.big-text { font-size: 32px; font-weight: 700; margin: 12px 0; }
+
+.row { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; align-items: center; }
+.row.center { justify-content: center; }
+.row input:not([type=checkbox]) { flex: 1; min-width: 160px; }
+
+input { font: inherit; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; }
+
+button, .btn {
+  font: inherit; cursor: pointer; padding: 10px 16px; border-radius: 8px;
+  border: 1px solid var(--line); background: var(--card); color: var(--fg);
+  text-decoration: none; display: inline-block;
+}
+button:disabled { opacity: .45; cursor: not-allowed; }
+button.on { background: var(--accent); color: var(--accent-fg); }
+button.primary { background: var(--accent); color: var(--accent-fg); border: none; }
+button.big { font-size: 22px; padding: 14px 32px; margin: 16px 0; }
+button.link { border: none; background: none; color: var(--muted); text-decoration: underline; }
+
+.chips { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.chips li { background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 4px 4px 4px 14px; }
+.chips .x { border: none; padding: 2px 8px; background: none; color: var(--muted); }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.card {
+  display: flex; flex-direction: column; gap: 6px; padding: 20px; background: var(--card);
+  border: 1px solid var(--line); border-radius: 12px; color: var(--fg); text-decoration: none;
+}
+.card:hover { border-color: var(--accent); }
+.card .emoji { font-size: 48px; }
+
+.winners { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 24px 0; }
+.winner {
+  font-size: 40px; font-weight: 800; padding: 16px 32px; border-radius: 16px;
+  background: var(--win); color: #fff; animation: pop .5s ease;
+}
+@keyframes pop { from { transform: scale(.3); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* 룰렛 */
+.wheel-wrap { position: relative; width: min(360px, 90vw); margin: 0 auto; }
+.wheel { width: 100%; display: block; }
+.pointer { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 28px; color: var(--win); z-index: 1; }
+.legend { columns: 3; text-align: left; font-size: 14px; max-width: 480px; margin: 12px auto; }
+
+/* 제비뽑기 */
+.lots { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 10px; margin: 16px 0; }
+.lot { height: 110px; font-size: 32px; display: flex; flex-direction: column; align-items: center; justify-content: center; background: var(--accent); color: #fff; }
+.lot.open { background: var(--card); color: var(--muted); font-size: 18px; }
+.lot.win { background: var(--win); color: #fff; font-size: 18px; animation: pop .4s; }
+.lot small { font-size: 14px; }
+
+/* 사다리 */
+.table-wrap { overflow-x: auto; }
+.ladder-labels { position: relative; height: 44px; }
+.ladder-labels > * {
+  position: absolute; transform: translateX(-50%); top: 4px; white-space: nowrap;
+  font-size: 14px; padding: 6px 8px; max-width: 62px; overflow: hidden; text-overflow: ellipsis;
+}
+.ladder-labels span { font-size: 20px; }
+.ladder-labels span.win { color: var(--win); }
+.ladder-path { stroke-dasharray: 3000; stroke-dashoffset: 3000; animation: draw 1.2s forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+
+/* 폭탄 */
+.bomb { font-size: 120px; animation: shake .3s infinite; }
+.bomb.boom { animation: pop .3s; }
+@keyframes shake { 0%,100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+
+/* 기록 */
+table { border-collapse: collapse; width: 100%; font-size: 15px; background: var(--card); }
+th, td { border-bottom: 1px solid var(--line); padding: 8px; white-space: nowrap; }
