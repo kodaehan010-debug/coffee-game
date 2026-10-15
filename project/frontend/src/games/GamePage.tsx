@@ -24,9 +24,7 @@ export function GamePage() {
   const G = game.Component
   return (
     <section>
-      <h2>
-        {game.emoji} {game.name}
-      </h2>
+      <h2>{game.name}</h2>
       <p className="muted">
         참가 {players.length}명 · 당첨 {k}명 · <Link to="/games">다른 게임</Link>
       </p>

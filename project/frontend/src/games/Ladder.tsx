@@ -6,7 +6,7 @@ import type { GameProps } from './registry'
 const COL_W = 64
 const ROW_H = 28
 const PAD = 36
-const COLORS = ['#e4572e', '#29335c', '#17bebb', '#ffc914', '#76b041', '#8e44ad']
+const PATH_COLOR = '#E0002A'
 
 export default function Ladder({ players, winners, sound, onFinish }: GameProps) {
   const n = players.length
@@ -20,6 +20,7 @@ export default function Ladder({ players, winners, sound, onFinish }: GameProps)
   const y = (r: number) => ROW_H * (r + 0.5)
 
   const results = players.map((_, i) => tracePath(ladder, i))
+  const hot = (i: number) => prizes[results[i].end] || i === shown[shown.length - 1]
 
   const show = (i: number) => {
     if (shown.includes(i)) return
@@ -62,30 +63,33 @@ export default function Ladder({ players, winners, sound, onFinish }: GameProps)
           </div>
           <svg width={w} height={h}>
             {players.map((_, c) => (
-              <line key={c} x1={x(c)} y1={0} x2={x(c)} y2={h} stroke="#999" strokeWidth={3} />
+              <line key={c} x1={x(c)} y1={0} x2={x(c)} y2={h} stroke="#D1D5DB" strokeWidth={3} />
             ))}
             {ladder.rungs.map((row, r) =>
               row.map((c) => (
-                <line key={`${r}-${c}`} x1={x(c)} y1={y(r)} x2={x(c + 1)} y2={y(r)} stroke="#999" strokeWidth={3} />
+                <line key={`${r}-${c}`} x1={x(c)} y1={y(r)} x2={x(c + 1)} y2={y(r)} stroke="#D1D5DB" strokeWidth={3} />
               )),
             )}
-            {shown.map((i) => (
-              <polyline
-                key={i}
-                className="ladder-path"
-                points={points(i)}
-                fill="none"
-                stroke={COLORS[i % COLORS.length]}
-                strokeWidth={5}
-              />
-            ))}
+            {/* 당첨 경로·방금 누른 경로는 빨강(위에 그림), 나머지는 회색 */}
+            {[...shown]
+              .sort((a, b) => Number(hot(a)) - Number(hot(b)))
+              .map((i) => (
+                <polyline
+                  key={i}
+                  className="ladder-path"
+                  points={points(i)}
+                  fill="none"
+                  stroke={hot(i) ? PATH_COLOR : '#9CA3AF'}
+                  strokeWidth={hot(i) ? 5 : 3}
+                />
+              ))}
           </svg>
           <div className="ladder-labels">
             {prizes.map((p, c) => {
               const who = shown.find((i) => results[i].end === c)
               return (
-                <span key={c} style={{ left: x(c) }} className={who != null ? (p ? 'win' : 'on') : ''}>
-                  {who != null ? (p ? '☕' : '꽝') : '?'}
+                <span key={c} style={{ left: x(c) }}>
+                  {who != null ? <span className={`badge ${p ? 'hit' : 'miss'}`}>{p ? '당첨' : '꽝'}</span> : '?'}
                 </span>
               )
             })}

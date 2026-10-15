@@ -20,19 +20,23 @@ export default function Home() {
     <section>
       <h2>참가자 입력</h2>
       <div className="row">
+        <div className="field">
+        <label htmlFor="name">이름 (쉼표로 여러 명 한 번에)</label>
         <input
+          id="name"
           value={input}
-          placeholder="이름 (쉼표로 여러 명)"
+          placeholder="예: 김가나, 이다라"
           disabled={full}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={(e) => e.key === 'Enter' && !e.nativeEvent.isComposing && add()}
         />
+        </div>
         <button onClick={add} disabled={full || !input.trim()}>
           추가
         </button>
       </div>
       <p className="muted">
-        {players.length} / {MAX_PLAYERS}명 {full && '· ⚠️ 최대 인원'}
+        <span className="tnum">{players.length} / {MAX_PLAYERS} 명</span> {full && '· 최대 인원 도달'}
       </p>
 
       <ul className="chips">
@@ -62,7 +66,7 @@ export default function Home() {
       </div>
 
       <button className="primary big" disabled={players.length < 2} onClick={() => navigate('/games')}>
-        게임 고르기 →
+        게임 고르기
       </button>
       {players.length < 2 && <p className="muted">2명 이상 입력해 주세요.</p>}
     </section>

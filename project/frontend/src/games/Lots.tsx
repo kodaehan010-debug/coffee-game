@@ -31,13 +31,13 @@ export default function Lots({ players, winners, sound, onFinish }: GameProps) {
 
   return (
     <div>
-      {turn && <p className="big-text">👉 {turn} 님 차례</p>}
+      {turn && <p className="big-text">{turn} 님 차례</p>}
       <div className="lots">
         {cards.map((win, i) => (
           <button key={i} className={`lot ${owner[i] ? (win ? 'win' : 'open') : ''}`} onClick={() => pick(i)}>
             {owner[i] ? (
               <>
-                <span>{win ? '☕ 당첨' : '꽝'}</span>
+                <span className={`badge ${win ? 'hit' : 'miss'}`}>{win ? '당첨' : '꽝'}</span>
                 <small>{owner[i]}</small>
               </>
             ) : (

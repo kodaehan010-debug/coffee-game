@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { randInt } from '../lib/draw'
+import Icon from '../components/Icon'
 import { beep, boom } from '../lib/sound'
 import type { GameProps } from './registry'
 
@@ -66,15 +67,18 @@ export default function Bomb({ players, winners, sound, onFinish }: GameProps) {
       {won.length > 0 && <p className="muted">당첨: {won.join(', ')}</p>}
       {!holder ? (
         <button className="primary big" onClick={start}>
-          💣 시작 ({won.length + 1}/{winners})
+          시작 ({won.length + 1}/{winners})
         </button>
       ) : (
         <>
-          <div className={`bomb ${loser ? 'boom' : ''}`}>{loser ? '💥' : '💣'}</div>
+          <div className={`bomb ${loser ? 'boom' : ''}`}>
+            <Icon name="bomb" size={120} />
+          </div>
           <p className="big-text">{holder}</p>
+          {loser && <p><span className="badge hit">펑! 당첨</span></p>}
           {!loser && (
             <button className="primary big" onClick={pass}>
-              넘기기 →
+              넘기기
             </button>
           )}
         </>
