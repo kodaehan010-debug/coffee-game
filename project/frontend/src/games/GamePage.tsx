@@ -2,6 +2,8 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { useAppState } from '../AppState'
 import { fanfare } from '../lib/sound'
 import { storage } from '../lib/storage'
+import { fairWeights } from '../lib/draw'
+import { personStats } from '../lib/rules'
 import { GAMES } from './registry'
 
 export function GamePage() {
@@ -14,6 +16,10 @@ export function GamePage() {
   if (players.length < 2) return <Navigate to="/" replace />
 
   const k = Math.min(settings.winners, players.length - 1)
+
+  // 과거 당첨 횟수 기반 보정
+  const wins = new Map(personStats(storage.loadHistory()).map((s) => [s.name, s.wins]))
+  const weight = fairWeights(players, (n) => wins.get(n) ?? 0)
 
   const finish = (winners: string[]) => {
     fanfare(settings.sound)
@@ -29,7 +35,7 @@ export function GamePage() {
         참가 {players.length}명 · 당첨 {k}명 · <Link to="/games">다른 게임</Link>
       </p>
       {/* key: 재진입 시 상태 초기화 */}
-      <G key={id} players={players} winners={k} sound={settings.sound} onFinish={finish} />
+      <G key={id} players={players} winners={k} sound={settings.sound} weight={weight} onFinish={finish} />
     </section>
   )
 }

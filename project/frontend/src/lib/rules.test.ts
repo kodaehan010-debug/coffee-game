@@ -17,11 +17,11 @@ describe('narrow', () => {
 })
 
 describe('raceStep', () => {
-  it('뒤로 가지 않음, 최대 전진 이하', () => {
+  it('뒤로 가지 않음, 최대 전진(질주 6) 이하', () => {
     const next = raceStep([0, 5, 10], 3)
     next.forEach((p, i) => {
       expect(p - [0, 5, 10][i]).toBeGreaterThanOrEqual(0)
-      expect(p - [0, 5, 10][i]).toBeLessThanOrEqual(3)
+      expect(p - [0, 5, 10][i]).toBeLessThanOrEqual(6)
     })
   })
 })

@@ -12,6 +12,8 @@ export type GameProps = {
   players: string[]
   winners: number
   sound: boolean
+  /** 당첨 보정 가중치 (과거 당첨 많을수록 낮음). 룰렛·제비뽑기·폭탄에서 사용 */
+  weight: (name: string) => number
   onFinish: (winners: string[]) => void
 }
 

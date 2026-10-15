@@ -1,16 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
-import { randInt } from '../lib/draw'
+import { randInt, weightedIndex } from '../lib/draw'
 import Icon from '../components/Icon'
 import { beep, boom } from '../lib/sound'
 import type { GameProps } from './registry'
 
-const pickOther = (list: string[], except?: string | null) => {
+// 다음 보유자: 당첨 보정 가중치 비례
+const pickOther = (list: string[], weight: (n: string) => number, except?: string | null) => {
   const others = list.filter((p) => p !== except)
-  return others[randInt(others.length)]
+  return others[weightedIndex(others.map(weight))]
 }
 
 // 폭탄을 랜덤한 다른 사람에게 넘김. 숨겨진 시간(5~15초) 후 폭발 → 들고 있던 사람 당첨
-export default function Bomb({ players, winners, sound, onFinish }: GameProps) {
+export default function Bomb({ players, winners, sound, weight, onFinish }: GameProps) {
   const [pool, setPool] = useState(players)
   const [won, setWon] = useState<string[]>([])
   const [holder, setHolder] = useState<string | null>(null)
@@ -53,13 +54,13 @@ export default function Bomb({ players, winners, sound, onFinish }: GameProps) {
   }, [loser, won, winners, onFinish])
 
   const start = () => {
-    setHolder(pickOther(pool))
+    setHolder(pickOther(pool, weight))
     setRound((r) => r + 1)
   }
 
   const pass = () => {
     beep(900, 50, sound)
-    setHolder(pickOther(pool, holder))
+    setHolder(pickOther(pool, weight, holder))
   }
 
   return (

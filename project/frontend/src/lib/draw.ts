@@ -37,3 +37,29 @@ export function normalizeNames(input: readonly string[]): string[] {
   }
   return out.slice(0, MAX_PLAYERS)
 }
+
+/** 가중치 비례 인덱스 선택 (가중치 합 0이면 균등) */
+export function weightedIndex(weights: readonly number[], rng?: Rng): number {
+  const total = weights.reduce((a, b) => a + b, 0)
+  if (!(total > 0)) return randInt(weights.length, rng)
+  let r = (randInt(1_000_000, rng) / 1_000_000) * total
+  for (let i = 0; i < weights.length; i++) if ((r -= weights[i]) < 0) return i
+  return weights.length - 1
+}
+
+/** 가중치 비례로 k명 선택 (중복 없음) */
+export function weightedPick(names: readonly string[], k: number, weight: (n: string) => number, rng?: Rng): string[] {
+  const pool = [...names]
+  const out: string[] = []
+  while (out.length < k && pool.length) out.push(pool.splice(weightedIndex(pool.map(weight), rng), 1)[0])
+  return out
+}
+
+/**
+ * 당첨 보정 가중치: 과거 당첨이 많을수록 낮음.
+ * 참가자 중 최소 당첨 횟수 기준 차이 d → 1/(1+d)  (예: 0회 1, 1회 더 많음 0.5, 2회 0.33)
+ */
+export function fairWeights(players: readonly string[], wins: (n: string) => number): (n: string) => number {
+  const min = Math.min(...players.map(wins))
+  return (n) => 1 / (1 + wins(n) - min)
+}

@@ -3,9 +3,12 @@ import { shuffle } from '../lib/draw'
 import { raceStep } from '../lib/rules'
 import { beep } from '../lib/sound'
 import type { GameProps } from './registry'
+import Horse from '../components/Horse'
 
 const GOAL = 100
 const TICK_MS = 120
+// 차분한 말 색상 팔레트
+const COLORS = ['#c9a27e', '#a9b8c9', '#d8c3a5', '#b7c9a8', '#c7b2d6', '#e0b9a0', '#9fb5b0', '#d6c6b0']
 
 // 모든 말이 랜덤 속도로 전진. 결승선에 늦게 들어온 k명 당첨
 export default function Race({ players, winners, sound, onFinish }: GameProps) {
@@ -38,15 +41,18 @@ export default function Race({ players, winners, sound, onFinish }: GameProps) {
 
   return (
     <div>
-      <div className="race">
+      <div className={`race${players.length > 12 ? ' compact' : ''}`}>
         {players.map((p, i) => {
           const rank = order.indexOf(i)
+          const done = pos[i] >= GOAL
           return (
             <div key={p} className="lane">
               <span className="lane-name">{p}</span>
               <div className="track">
-                <div className="runner-wrap" style={{ transform: `translateX(calc(${pos[i]}% * 0.92))` }}>
-                  <span className="runner">{rank >= 0 ? rank + 1 : '●'}</span>
+                {/* 래퍼 폭 = 트랙 폭 → (100% - 말 폭) × 진행률 만큼 이동, 100이면 코끝이 결승선 */}
+                <div className="runner-wrap" style={{ transform: `translateX(calc((100% - var(--horse-w)) * ${pos[i] / GOAL}))` }}>
+                  <Horse color={COLORS[i % COLORS.length]} running={running && !done} />
+                  {rank >= 0 && <span className="runner-rank">{rank + 1}</span>}
                 </div>
               </div>
             </div>

@@ -16,4 +16,4 @@ it('경마 꼴찌 균등(±20%)', () => {
     cnt[order[4]]++
   }
   cnt.forEach((c) => expect(Math.abs(c - 600) / 600).toBeLessThan(0.2))
-})
+}, 30000) // 시뮬레이션 반복이 많아 시간 여유

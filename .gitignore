@@ -35,3 +35,7 @@ desktop.ini
 
 # Claude skill eval artifacts (unrelated to project)
 .claude/skills/ons-ui-designer-workspace/
+
+# 실명 명단 (공개 저장소 제외)
+docs/users.xlsx
+project/frontend/src/data/roster.local.json

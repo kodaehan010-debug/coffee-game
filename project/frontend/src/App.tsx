@@ -7,6 +7,7 @@ import Games from './pages/Games'
 import History from './pages/History'
 import Home from './pages/Home'
 import Result from './pages/Result'
+import Roster from './pages/Roster'
 import Settings from './pages/Settings'
 
 const MENU = [
@@ -21,7 +22,7 @@ function useTitle() {
   const game = GAMES.find((g) => path === `/games/${g.id}`)
   if (game) return game.name
   if (path === '/result') return '결과'
-  return { '/': '참가자 입력', '/games': '게임 선택', '/history': '기록·통계', '/settings': '설정' }[path] ?? ''
+  return { '/': '참가자 입력', '/games': '게임 선택', '/history': '기록·통계', '/settings': '설정', '/settings/roster': '명단 관리' }[path] ?? ''
 }
 
 function Layout() {
@@ -64,6 +65,7 @@ export default function App() {
             <Route path="/result" element={<Result />} />
             <Route path="/history" element={<History />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/settings/roster" element={<Roster />} />
             <Route path="*" element={<p className="empty">페이지를 찾을 수 없습니다.</p>} />
           </Route>
         </Routes>

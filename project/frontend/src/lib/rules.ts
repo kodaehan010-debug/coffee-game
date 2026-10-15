@@ -17,9 +17,22 @@ export function narrow(range: [number, number], secret: number, guess: number) {
   return { hit: false, range: next }
 }
 
-/** 경주 한 틱: 각 말 위치에 0~maxStep 랜덤 전진 */
+/**
+ * 경주 한 틱: 기본 0~maxStep 랜덤 전진 + 엎치락뒤치락 요소 (모든 말에 같은 규칙 → 공정)
+ * - 뒤처진 말은 따라잡기 보너스, 앞선 말은 가끔 숨 고르기
+ * - 가끔 질주(+4~6) / 헛발(0)
+ */
 export function raceStep(pos: number[], maxStep = 3, rng?: Rng): number[] {
-  return pos.map((p) => p + randInt(maxStep + 1, rng))
+  const mean = pos.reduce((a, b) => a + b, 0) / pos.length
+  return pos.map((p) => {
+    const r = randInt(100, rng)
+    if (r < 6) return p + 4 + randInt(3, rng) // 질주
+    if (r < 12) return p // 헛발
+    let step = randInt(maxStep + 1, rng)
+    if (p < mean - 6) step += randInt(3, rng) // 추격
+    else if (p > mean + 6 && randInt(2, rng)) step = Math.max(0, step - 1) // 숨 고르기
+    return p + step
+  })
 }
 
 export type PersonStat = { name: string; wins: number; plays: number; amount: number }
