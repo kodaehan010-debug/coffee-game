@@ -4,11 +4,14 @@ import { fanfare } from '../lib/sound'
 import { storage } from '../lib/storage'
 import { fairWeights } from '../lib/draw'
 import { personStats } from '../lib/rules'
+import { shortLabel } from '../lib/roster'
 import { GAMES } from './registry'
 
 export function GamePage() {
   const { id } = useParams()
-  const { players, settings } = useAppState()
+  const { players: keys, settings } = useAppState()
+  // 표시 이름: 참가자 중 동명이인이 없으면 "이름(팀)" → "이름"
+  const players = keys.map(shortLabel(keys))
   const navigate = useNavigate()
   const game = GAMES.find((g) => g.id === id)
 

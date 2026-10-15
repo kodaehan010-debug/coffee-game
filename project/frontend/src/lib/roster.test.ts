@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { displayName, parseRoster, teamsOf } from './roster'
+import { displayName, memberOf, parseRoster, shortLabel, teamsOf } from './roster'
 
 describe('parseRoster', () => {
   it('헤더(팀/이름) 탐색 + 공백 정리 + 중복·빈칸 제거', () => {
@@ -20,5 +20,24 @@ describe('displayName', () => {
     expect(displayName(roster[0], roster)).toBe('김(A)')
     expect(displayName(roster[2], roster)).toBe('이')
     expect(teamsOf(roster)).toEqual(['A', 'B'])
+  })
+})
+
+describe('memberOf', () => {
+  it('표시 이름 → 구성원 (동명이인은 팀 표기로 구분)', () => {
+    const roster = [{ team: 'A', name: '김' }, { team: 'B', name: '김' }, { team: 'A', name: '이' }]
+    expect(memberOf('김(B)', roster)).toEqual({ team: 'B', name: '김' })
+    expect(memberOf('이', roster)).toEqual({ team: 'A', name: '이' })
+    expect(memberOf('김', roster)).toBeUndefined()
+    expect(memberOf('없음', roster)).toBeUndefined()
+  })
+})
+
+describe('shortLabel', () => {
+  it('명단 안에 동명이인 없으면 이름만', () => {
+    const l = shortLabel(['홍길동(강북)', '김철수'])
+    expect(l('홍길동(강북)')).toBe('홍길동')
+    const l2 = shortLabel(['홍길동(강북)', '홍길동(강남)'])
+    expect(l2('홍길동(강북)')).toBe('홍길동(강북)')
   })
 })

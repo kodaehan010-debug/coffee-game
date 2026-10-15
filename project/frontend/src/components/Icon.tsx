@@ -1,6 +1,8 @@
 // 24px 선 아이콘 (이모지 대체)
 const PATHS: Record<string, string> = {
   home: 'M3 11l9-7 9 7M5 10v10h5v-6h4v6h5V10',
+  star: 'M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z',
+  plus: 'M12 5v14M5 12h14',
   grid: 'M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z',
   list: 'M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01',
   settings: 'M12 15a3 3 0 100-6 3 3 0 000 6zM19 12l2-1-1-3-2 .2-1.3-1.3L17 5l-3-1-1 2h-2L10 4 7 5l.3 1.9L6 8.2 4 8l-1 3 2 1v0l-2 1 1 3 2-.2 1.3 1.3L7 19l3 1 1-2h2l1 2 3-1-.3-1.9 1.3-1.3 2 .2 1-3z',
@@ -12,6 +14,8 @@ const PATHS: Record<string, string> = {
   hash: 'M5 9h14M5 15h14M10 4L8 20M16 4l-2 16',
   zap: 'M13 2L4 14h7l-1 8 9-12h-7z',
   shuffle: 'M4 7h3l10 10h3M4 17h3l3-3M14 10l3-3h3M18 4l3 3-3 3M18 14l3 3-3 3',
+  coffee: 'M4 9h12v6a5 5 0 01-5 5H9a5 5 0 01-5-5zM16 11h1.5a2.5 2.5 0 010 5H16M8 3v3M12 3v3',
+  groups: 'M9 11a3 3 0 100-6 3 3 0 000 6zM3 20a6 6 0 0112 0M16 11a2.5 2.5 0 100-5M17 14a5 5 0 014 6',
 }
 
 export default function Icon({ name, size = 24 }: { name: string; size?: number }) {

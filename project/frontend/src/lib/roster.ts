@@ -64,3 +64,19 @@ export const rosterStore = {
   loadFavorites: () => read<Favorite[]>('cg.favorites', []),
   saveFavorites: (f: Favorite[]) => write('cg.favorites', f),
 }
+
+/** 표시 이름("이름" 또는 "이름(팀)") → 명단의 구성원 (소속 팀 확인용). 직접 추가한 이름이면 undefined */
+export function memberOf(display: string, roster: Member[] = rosterStore.load()): Member | undefined {
+  return roster.find((m) => displayName(m, roster) === display)
+}
+
+/**
+ * 선택 명단 기준 짧은 표시 이름: "이름(팀)" 이라도 명단 안에 같은 이름이 없으면 "이름"만
+ * (선택·저장 키는 그대로 두고 화면·결과 표시에만 사용)
+ */
+export function shortLabel(list: readonly string[]): (s: string) => string {
+  const base = (s: string) => s.replace(/\([^()]*\)$/, '')
+  const cnt = new Map<string, number>()
+  list.forEach((s) => cnt.set(base(s), (cnt.get(base(s)) ?? 0) + 1))
+  return (s) => (cnt.get(base(s)) === 1 ? base(s) : s)
+}

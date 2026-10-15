@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { readSheet } from 'read-excel-file/browser'
 import { parseRoster, rosterStore, teamsOf, type Member } from '../lib/roster'
 import { addMember, filterRoster, removeMember } from '../lib/rosterEdit'
@@ -8,6 +8,8 @@ const NEW = '__new__'
 
 // 명단 관리: 팀 필터·검색·추가·삭제·기본값 복원·엑셀 교체
 export default function Roster() {
+  // 조추첨 앱에서 열면 조추첨으로 복귀
+  const back = useLocation().pathname.startsWith('/draw') ? '/draw' : '/settings'
   const [roster, setRoster] = useState(rosterStore.load)
   const [tab, setTab] = useState('')
   const [q, setQ] = useState('')
@@ -47,7 +49,7 @@ export default function Roster() {
 
   return (
     <section className="roster-manage">
-      <p><Link to="/settings">설정으로 돌아가기</Link></p>
+      <p><Link to={back}>설정으로 돌아가기</Link></p>
       <h2>명단 관리</h2>
       <p className="muted">
         이 브라우저에만 저장됩니다. 현재 <span className="tnum">{teams.length}</span>개 팀,{' '}
