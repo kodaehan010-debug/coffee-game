@@ -2,7 +2,7 @@
 
 export type Rng = () => number
 
-export const MAX_PLAYERS = 30
+export const MAX_PLAYERS = 60
 export const MAX_WINNERS = 3
 
 /** 0 ~ n-1 정수 난수 (crypto 우선) */

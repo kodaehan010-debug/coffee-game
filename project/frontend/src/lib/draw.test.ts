@@ -30,9 +30,9 @@ describe('pickWinners', () => {
 })
 
 describe('normalizeNames', () => {
-  it('공백·빈값·중복 제거, 최대 30명', () => {
+  it('공백·빈값·중복 제거, 최대 60명', () => {
     expect(normalizeNames([' a ', '', 'a', 'b'])).toEqual(['a', 'b'])
-    const many = Array.from({ length: 40 }, (_, i) => `p${i}`)
+    const many = Array.from({ length: 80 }, (_, i) => `p${i}`)
     expect(normalizeNames(many)).toHaveLength(MAX_PLAYERS)
   })
 })
