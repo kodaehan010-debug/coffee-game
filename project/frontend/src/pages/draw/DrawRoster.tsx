@@ -11,7 +11,7 @@ export default function DrawRoster() {
   return (
     <section className="td">
       <h2>추첨 명단 <span className="muted tnum">{n}명</span></h2>
-      <Favorites selected={s.selected} onLoad={(selected) => update({ selected })} storeKey="td.favorites" />
+      <Favorites selected={s.selected} onLoad={(selected) => update({ selected })} />
       <RosterPicker selected={s.selected} onChange={(selected) => update({ selected })} rosterLink="/draw/settings" />
       <div className="row td-actions">
         {n > 0 && <button className="link" onClick={() => update({ selected: [] })}>전체 비우기</button>}

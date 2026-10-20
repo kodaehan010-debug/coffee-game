@@ -1,23 +1,35 @@
-// 즐겨찾기 카드: 별 버튼으로 한 번에 불러오기. 앱마다 저장 키 분리 (커피 cg.favorites / 조추첨 td.favorites)
+// 즐겨찾기 카드: 별 버튼으로 한 번에 불러오기. 커피게임·조추첨 공용 (cg.favorites)
 import { useState } from 'react'
 import type { Favorite } from '../lib/roster'
 import Icon from './Icon'
 
-type Props = { selected: string[]; onLoad: (players: string[]) => void; max?: number; storeKey: string }
+type Props = { selected: string[]; onLoad: (players: string[]) => void; max?: number }
+
+const KEY = 'cg.favorites'
+const OLD_KEY = 'td.favorites' // 이전 조추첨 전용 키 → 공용 키로 병합
 
 const read = (k: string): Favorite[] => {
   try { return JSON.parse(localStorage.getItem(k) ?? '[]') as Favorite[] } catch { return [] }
 }
 
-export default function Favorites({ selected, onLoad, max = Infinity, storeKey }: Props) {
-  const [favs, setFavs] = useState<Favorite[]>(() => read(storeKey))
+const readMerged = (): Favorite[] => {
+  const cur = read(KEY)
+  const old = read(OLD_KEY)
+  if (old.length === 0) return cur
+  const merged = [...cur, ...old.filter((o) => !cur.some((c) => c.name === o.name))]
+  try { localStorage.setItem(KEY, JSON.stringify(merged)); localStorage.removeItem(OLD_KEY) } catch { /* 무시 */ }
+  return merged
+}
+
+export default function Favorites({ selected, onLoad, max = Infinity }: Props) {
+  const [favs, setFavs] = useState<Favorite[]>(readMerged)
   const [adding, setAdding] = useState(false)
   const [name, setName] = useState('')
   const [msg, setMsg] = useState('')
 
   const saveFavs = (f: Favorite[]) => {
     setFavs(f)
-    try { localStorage.setItem(storeKey, JSON.stringify(f)) } catch { /* 무시 */ }
+    try { localStorage.setItem(KEY,JSON.stringify(f)) } catch { /* 무시 */ }
   }
   const save = () => {
     const n = name.trim()

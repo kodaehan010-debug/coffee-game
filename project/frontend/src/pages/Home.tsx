@@ -14,7 +14,7 @@ export default function Home() {
   return (
     <section className="home">
       <h2>참가자 선택</h2>
-      <Favorites selected={players} onLoad={setPlayers} max={MAX_PLAYERS} storeKey="cg.favorites" />
+      <Favorites selected={players} onLoad={setPlayers} max={MAX_PLAYERS} />
       <div className="home-grid">
         {/* 왼쪽: 명단 */}
         <div className="panel">
