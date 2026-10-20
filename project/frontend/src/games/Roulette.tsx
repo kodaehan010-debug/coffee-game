@@ -22,7 +22,13 @@ export default function Roulette({ players, winners, sound, weight, onFinish }: 
   const [last, setLast] = useState<string | null>(null)
   const raf = useRef(0)
   const pointer = useRef<SVGPathElement>(null)
+  const list = useRef<HTMLOListElement>(null)
   const timer = useRef(0)
+
+  // 당첨 순간 명단에서 해당 줄로 자동 스크롤
+  useEffect(() => {
+    if (last) list.current?.querySelector('.hit')?.scrollIntoView({ block: 'nearest', behavior: reducedMotion() ? 'auto' : 'smooth' })
+  }, [last])
 
   useEffect(
     () => () => {
@@ -35,6 +41,7 @@ export default function Roulette({ players, winners, sound, weight, onFinish }: 
   const n = pool.length
   const slice = 360 / n
   const small = n > 30 // 30명 초과 시 번호 표시
+  const num = (name: string) => players.indexOf(name) + 1 // 원래 명단 번호(당첨 후에도 고정)
 
   const stop = (idx: number) => {
     const w = pool[idx]
@@ -107,6 +114,7 @@ export default function Roulette({ players, winners, sound, weight, onFinish }: 
 
   return (
     <div className="rl">
+      <div className="rl-main">
       <div className="rl-stage">
         <svg viewBox={`${-rim - 4} ${-rim - 24} ${r * 2 + rim * 2 + 8} ${r * 2 + rim * 2 + 28}`} className="wheel" role="img" aria-label="룰렛">
           <circle cx={r} cy={r} r={r + rim / 2} fill="none" stroke="#374151" strokeWidth={rim} />
@@ -118,6 +126,8 @@ export default function Roulette({ players, winners, sound, weight, onFinish }: 
               const mid = (i + 0.5) * slice
               const [tx, ty] = pt(mid, r * 0.68)
               const on = hit === i
+              const abs = (((mid + rot) % 360) + 360) % 360 // 화면 기준 각도
+              const flip = abs > 180 // 왼쪽 절반은 글자를 뒤집어 똑바로
               return (
                 <g key={name}>
                   <path d={arc(i)} fill={on ? '#FFFFFF' : FILLS[i % FILLS.length]} stroke="#FFFFFF" strokeWidth={1.5} />
@@ -129,9 +139,9 @@ export default function Roulette({ players, winners, sound, weight, onFinish }: 
                     fill={on ? '#E0002A' : '#374151'}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    transform={`rotate(${mid - 90} ${tx} ${ty})`}
+                    transform={`rotate(${mid + (flip ? 90 : -90)} ${tx} ${ty})`}
                   >
-                    {small ? i + 1 : label(name)}
+                    {small ? num(name) : label(name)}
                   </text>
                 </g>
               )
@@ -150,24 +160,29 @@ export default function Roulette({ players, winners, sound, weight, onFinish }: 
         </button>
       </div>
 
-      <div className="rl-result" aria-live="polite">
-        {last ? <div key={last} className="rl-card"><span>당첨</span><strong>{last}</strong></div> : <p className="muted">{spinning ? '돌아가는 중…' : '가운데 START 를 눌러 돌리기'}</p>}
       </div>
 
-      <div className="rl-status">
-        <span className="muted tnum">남은 인원 {n} 명</span>
+      <aside className="rl-side">
+        <div className="rl-result" aria-live="polite">
+          {last ? <div key={last} className="rl-card"><span>당첨</span><strong>{last}</strong></div> : <p className="muted">{spinning ? '돌아가는 중…' : '가운데 START 를 눌러 돌리기'}</p>}
+        </div>
         {won.length > 0 && (
           <ul className="rl-chips">
             {won.map((w) => <li key={w}>{w}</li>)}
           </ul>
         )}
-      </div>
-
-      {small && (
-        <ol className="legend">
-          {pool.map((p) => <li key={p}>{p}</li>)}
+        <div className="rl-list-head">
+          <span>참가 명단</span>
+          <span className="muted tnum">남은 {n} / {players.length} 명</span>
+        </div>
+        <ol className="rl-list" ref={list}>
+          {players.map((p, i) => (
+            <li key={p} className={`${won.includes(p) ? 'out' : ''} ${p === last ? 'hit' : ''}`}>
+              <span className="tnum">{i + 1}</span>{p}
+            </li>
+          ))}
         </ol>
-      )}
+      </aside>
     </div>
   )
 }
